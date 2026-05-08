@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200" viewBox="0 0 400 200">
+  <rect width="400" height="200" fill="#1878dc"/>
+  <rect x="172" y="56" width="56" height="68" rx="6" fill="none" stroke="white" stroke-width="2.5" opacity="0.7"/>
+  <rect x="184" y="72" width="32" height="3" rx="1.5" fill="white" opacity="0.7"/>
+  <rect x="184" y="80" width="32" height="3" rx="1.5" fill="white" opacity="0.7"/>
+  <rect x="184" y="88" width="24" height="3" rx="1.5" fill="white" opacity="0.7"/>
+  <text x="200" y="152" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="600" fill="white" opacity="0.9">Data Retention Policy</text>
+  <text x="200" y="170" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="white" opacity="0.6">Policy</text>
+</svg>
