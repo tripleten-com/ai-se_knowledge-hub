@@ -85,10 +85,16 @@ results.push(
   ),
 );
 
+// Extract callback parameter name so any identifier is accepted (not just "doc").
+const mapCallbackMatch = documentListCode.match(/documents\.map\s*\(\s*\((\w+)\)/);
+const mapParam = mapCallbackMatch?.[1];
+
+// Accept parenthesized arrow body or block body, and self-closing or explicit closing tag.
 const mapsDocumentsToCards =
-  /documents\.map\s*\(\s*\(\s*doc\s*\)\s*=>\s*\([\s\S]*<DocumentCard[\s\S]*key=\{doc\.id\}[\s\S]*document=\{doc\}[\s\S]*onDelete=\{onDelete\}[\s\S]*\/>[\s\S]*\)\s*\)/.test(
-    documentListCode,
-  );
+  mapParam !== undefined &&
+  new RegExp(
+    `<DocumentCard[\\s\\S]*key=\\{${mapParam}\\.id\\}[\\s\\S]*document=\\{${mapParam}\\}[\\s\\S]*onDelete=\\{onDelete\\}[\\s\\S]*(?:\\/>|>\\s*<\\/DocumentCard>)`,
+  ).test(documentListCode);
 
 results.push(
   check(
@@ -105,7 +111,7 @@ const importsDocumentList =
 
 // Accept either an inline arrow handler or a named handler that calls console.log("Deleting:", id).
 const inlineHandler =
-  /<DocumentList[\s\S]*documents=\{documents\}[\s\S]*onDelete=\{[\s\S]*console\.log\s*\(\s*["']Deleting:["']\s*,\s*id\s*\)[\s\S]*\}[\s\S]*\/>/.test(
+  /<DocumentList[\s\S]*documents=\{documents\}[\s\S]*onDelete=\{[\s\S]*console\.log\s*\(\s*["']Deleting:["']\s*,\s*id\s*\)[\s\S]*\}[\s\S]*(?:\/>|>\s*<\/DocumentList>)/.test(
     appCode,
   );
 
@@ -113,7 +119,7 @@ const namedHandler =
   /function\s+\w+\s*\(\s*id\s*:\s*string\s*\)\s*\{[\s\S]*console\.log\s*\(\s*["']Deleting:["']\s*,\s*id\s*\)[\s\S]*\}/.test(
     appCode,
   ) &&
-  /<DocumentList[\s\S]*documents=\{documents\}[\s\S]*onDelete=\{\w+\}[\s\S]*\/>/.test(
+  /<DocumentList[\s\S]*documents=\{documents\}[\s\S]*onDelete=\{\w+\}[\s\S]*(?:\/>|>\s*<\/DocumentList>)/.test(
     appCode,
   );
 

@@ -61,8 +61,9 @@ results.push(
   ),
 );
 
+// Use backreference so any callback parameter name is accepted (not just "document").
 const hasHandleDelete =
-  /function\s+handleDelete\s*\(\s*id\s*:\s*string\s*\)\s*{[\s\S]*setDocuments\s*\([\s\S]*documents\.filter\s*\(\s*\(\s*document\s*\)\s*=>\s*(?:document\.id\s*!==\s*id|id\s*!==\s*document\.id)\s*\)[\s\S]*\)[\s\S]*}/.test(
+  /function\s+handleDelete\s*\(\s*id\s*:\s*string\s*\)\s*{[\s\S]*setDocuments\s*\([\s\S]*documents\.filter\s*\(\s*\((\w+)\)\s*=>\s*(?:\1\.id\s*!==\s*id|id\s*!==\s*\1\.id)\s*\)[\s\S]*\)[\s\S]*}/.test(
     appCode,
   );
 
@@ -75,7 +76,7 @@ results.push(
 );
 
 const passesHandleDelete =
-  /<DocumentList[\s\S]*onDelete=\{handleDelete\}[\s\S]*\/>/.test(appCode);
+  /<DocumentList[\s\S]*onDelete=\{handleDelete\}[\s\S]*(?:\/>|>\s*<\/DocumentList>)/.test(appCode);
 
 results.push(
   check(

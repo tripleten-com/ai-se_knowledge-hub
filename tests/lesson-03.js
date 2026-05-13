@@ -146,7 +146,7 @@ results.push(
 );
 
 const passesDocumentProp =
-  /<DocumentCard\s+document=\{sampleDocument\}\s*\/>/.test(appCode);
+  /<DocumentCard\s+document=\{sampleDocument\}\s*(?:\/>|>\s*<\/DocumentCard>)/.test(appCode);
 
 results.push(
   check(

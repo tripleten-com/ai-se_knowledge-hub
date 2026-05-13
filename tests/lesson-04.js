@@ -73,10 +73,17 @@ results.push(
   ),
 );
 
-const callsOnDeleteWithId =
+// Accept an inline arrow handler or a named handler that calls onDelete(document.id).
+const inlineOnClick =
   /onClick\s*=\s*{\s*\(\s*\)\s*=>\s*onDelete\s*\(\s*document\.id\s*\)\s*}/.test(
     documentCardCode,
   );
+
+const namedOnClick =
+  /onClick\s*=\s*{\s*\w+\s*}/.test(documentCardCode) &&
+  /onDelete\s*\(\s*document\.id\s*\)/.test(documentCardCode);
+
+const callsOnDeleteWithId = inlineOnClick || namedOnClick;
 
 results.push(
   check(
