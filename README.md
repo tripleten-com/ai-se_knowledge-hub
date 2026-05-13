@@ -1,13 +1,13 @@
 # React Basics Practice Tasks
 
-This is the starting code for the Functional Components and JSX chapter in TripleTen's AI SE Chapter 7.
+This is the starting code for the React Fundamentals chapter in TripleTen's AI SE Chapter 7.
 
 ## Getting started
 
-Download and extract the archice. Then run
+Fork the repo into your own account, then clone it. Then run:
 
 ```
-cd react-basics-practice
+cd as-se_knowledge-hub
 npm install && npm run dev
 ```
 
