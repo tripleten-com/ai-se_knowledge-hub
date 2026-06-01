@@ -1,10 +1,11 @@
 import "./Header.css";
 import logo from "../../assets/logo.svg";
+const appName = "Knowledge Hub";
 
 const Header = () => (
   <header className="header">
-    <img src={logo} alt="Knowledge Hub logo" className="header__logo" />
-    <h1>Knowledge Hub</h1>
+    <img src={logo} alt={`${appName} logo`} className="header__logo" />
+    <h1>{appName}</h1>
   </header>
 );
 
