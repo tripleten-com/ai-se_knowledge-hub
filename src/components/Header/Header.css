@@ -2,23 +2,22 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 0 32px;
-  height: 64px;
+  padding: 34px 32px 0;
   background-color: var(--color-bg-primary);
-  border-bottom: 1px solid var(--color-border);
-  box-shadow: var(--shadow);
   position: sticky;
   top: 0;
   z-index: 10;
+  max-width: 1440px;
+  margin: 0 auto;
 }
 
 .header__logo {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
 }
 
 .header h1 {
-  font-size: 18px;
+  font-size: 30px;
   font-weight: 600;
   color: var(--color-text-primary);
 }
@@ -26,4 +25,16 @@
 .header p {
   font-size: 14px;
   color: var(--color-text-secondary);
+}
+
+@media (max-width: 1441px) {
+  .header {
+    max-width: 972px;
+  }
+}
+
+@media (max-width: 972px) {
+  .header {
+    max-width: 502px;
+  }
 }
