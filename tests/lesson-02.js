@@ -65,7 +65,7 @@ results.push(
 );
 
 const exportsDocumentCard =
-  /export\s+default\s+DocumentCard\s*;?/.test(documentCardCode);
+  /export\s+default\s+(?:function\s+)?DocumentCard[\s({;]?/.test(documentCardCode);
 
 results.push(
   check(

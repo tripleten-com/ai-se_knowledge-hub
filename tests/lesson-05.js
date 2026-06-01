@@ -44,7 +44,7 @@ results.push(
 
 const exportsDocumentList =
   /function\s+DocumentList\s*\(/.test(documentListCode) &&
-  /export\s+default\s+DocumentList\s*;?/.test(documentListCode);
+  /export\s+default\s+(?:function\s+)?DocumentList[\s({;]?/.test(documentListCode);
 
 results.push(
   check(
