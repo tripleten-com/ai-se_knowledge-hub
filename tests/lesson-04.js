@@ -50,6 +50,9 @@ results.push(
 const receivesOnDeleteProp =
   /function\s+DocumentCard\s*\(\s*{\s*document\s*,\s*onDelete\s*}\s*:\s*DocumentCardProps\s*\)/.test(
     documentCardCode,
+  ) ||
+  /const\s+DocumentCard\s*(?::\s*React\.FC<DocumentCardProps>\s*)?=\s*\(\s*{\s*document\s*,\s*onDelete\s*}\s*:\s*DocumentCardProps\s*\)\s*=>/.test(
+    documentCardCode,
   );
 
 results.push(

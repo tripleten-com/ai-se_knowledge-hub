@@ -43,7 +43,10 @@ results.push(
 );
 
 const exportsDocumentList =
-  /function\s+DocumentList\s*\(/.test(documentListCode) &&
+  (/function\s+DocumentList\s*\(/.test(documentListCode) ||
+    /const\s+DocumentList\s*(?::\s*React\.FC<DocumentListProps>\s*)?=\s*\(/.test(
+      documentListCode,
+    )) &&
   /export\s+default\s+(?:function\s+)?DocumentList[\s({;]?/.test(documentListCode);
 
 results.push(
@@ -74,6 +77,9 @@ const hasDocumentListProps =
 
 const hasTypedFunctionSignature =
   /function\s+DocumentList\s*\(\s*{\s*documents\s*,\s*onDelete\s*}\s*:\s*DocumentListProps\s*\)/.test(
+    documentListCode,
+  ) ||
+  /const\s+DocumentList\s*(?::\s*React\.FC<DocumentListProps>\s*)?=\s*\(\s*{\s*documents\s*,\s*onDelete\s*}\s*:\s*DocumentListProps\s*\)\s*=>/.test(
     documentListCode,
   );
 
