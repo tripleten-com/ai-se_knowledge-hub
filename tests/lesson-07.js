@@ -22,7 +22,10 @@ const initialDocumentsMatch = appCode.match(
   /const\s+initialDocuments\s*:\s*Document\[\]\s*=\s*\[/,
 );
 
-const appFunctionIndex = appCode.search(/function\s+App\s*\(/);
+const appFunctionMatch = appCode.match(
+  /function\s+App\s*\(|const\s+App\s*(?::\s*React\.FC(?:<[^>]*>)?\s*)?=\s*\(/,
+);
+const appFunctionIndex = appFunctionMatch ? appFunctionMatch.index : -1;
 
 const hasInitialDocumentsOutsideApp =
   initialDocumentsMatch !== null &&

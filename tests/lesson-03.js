@@ -83,6 +83,9 @@ results.push(
 const receivesTypedDocumentProp =
   /function\s+DocumentCard\s*\(\s*{\s*document\s*}\s*:\s*DocumentCardProps\s*\)/.test(
     documentCardCode,
+  ) ||
+  /const\s+DocumentCard\s*(?::\s*React\.FC<DocumentCardProps>\s*)?=\s*\(\s*{\s*document\s*}\s*:\s*DocumentCardProps\s*\)\s*=>/.test(
+    documentCardCode,
   );
 
 results.push(
