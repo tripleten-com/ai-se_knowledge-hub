@@ -31,8 +31,45 @@ const documentListCode = documentListExists
   ? fs.readFileSync(documentListPath, "utf8")
   : "";
 
-const hasDocumentsArray =
-  /const\s+documents\s*:\s*Document\[\]\s*=\s*\[[\s\S]*id\s*:\s*["']1["'][\s\S]*title\s*:\s*["']Security Policy["'][\s\S]*preview\s*:\s*["']Updated access control guidelines\.["'][\s\S]*image\s*:\s*["']\/images\/security-policy\.svg["'][\s\S]*id\s*:\s*["']2["'][\s\S]*title\s*:\s*["']Onboarding Guide["'][\s\S]*preview\s*:\s*["']Getting started with the team\.["'][\s\S]*image\s*:\s*["']\/images\/onboarding-guide\.svg["'][\s\S]*id\s*:\s*["']3["'][\s\S]*title\s*:\s*["']Product Roadmap["'][\s\S]*preview\s*:\s*["']Q3 priorities and milestones\.["'][\s\S]*image\s*:\s*["']\/images\/q3-product-roadmap\.svg["'][\s\S]*\]/.test(appCode);
+const escapeRegExp = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+// Isolate the documents array, then each object literal within it, so
+// fields can be checked independently of their order within an object and
+// documents can be checked independently of their position in the array.
+const documentsArrayMatch = appCode.match(
+  /const\s+documents\s*:\s*Document\[\]\s*=\s*\[[\s\S]*?\]\s*;/,
+);
+const documentsArrayBlock = documentsArrayMatch?.[0] ?? "";
+const documentObjects = documentsArrayBlock.match(/\{[^{}]*\}/g) ?? [];
+
+const expectedDocuments = [
+  {
+    id: "1",
+    title: "Security Policy",
+    preview: "Updated access control guidelines.",
+    image: "/images/security-policy.svg",
+  },
+  {
+    id: "2",
+    title: "Onboarding Guide",
+    preview: "Getting started with the team.",
+    image: "/images/onboarding-guide.svg",
+  },
+  {
+    id: "3",
+    title: "Product Roadmap",
+    preview: "Q3 priorities and milestones.",
+    image: "/images/q3-product-roadmap.svg",
+  },
+];
+
+const hasDocumentsArray = expectedDocuments.every((doc) =>
+  documentObjects.some((obj) =>
+    Object.entries(doc).every(([key, value]) =>
+      new RegExp(`${key}\\s*:\\s*["']${escapeRegExp(value)}["']`).test(obj),
+    ),
+  ),
+);
 
 results.push(
   check(
@@ -95,12 +132,18 @@ results.push(
 const mapCallbackMatch = documentListCode.match(/documents\.map\s*\(\s*\((\w+)\)/);
 const mapParam = mapCallbackMatch?.[1];
 
-// Accept parenthesized arrow body or block body, and self-closing or explicit closing tag.
+// Isolate the first <DocumentCard /> element so its props can be checked
+// independently of the order the student writes them in.
+const documentCardTagMatch = documentListCode.match(
+  /<DocumentCard\b[\s\S]*?(?:\/>|>[\s\S]*?<\/DocumentCard>)/,
+);
+const documentCardTag = documentCardTagMatch?.[0] ?? "";
+
 const mapsDocumentsToCards =
   mapParam !== undefined &&
-  new RegExp(
-    `<DocumentCard[\\s\\S]*key=\\{${mapParam}\\.id\\}[\\s\\S]*document=\\{${mapParam}\\}[\\s\\S]*onDelete=\\{onDelete\\}[\\s\\S]*(?:\\/>|>\\s*<\\/DocumentCard>)`,
-  ).test(documentListCode);
+  new RegExp(`key=\\{${mapParam}\\.id\\}`).test(documentCardTag) &&
+  new RegExp(`document=\\{${mapParam}\\}`).test(documentCardTag) &&
+  /onDelete=\{onDelete\}/.test(documentCardTag);
 
 results.push(
   check(
@@ -115,19 +158,28 @@ const importsDocumentList =
     appCode,
   );
 
+// Isolate the first <DocumentList /> element so its props can be checked
+// independently of the order the student writes them in.
+const documentListTagMatch = appCode.match(
+  /<DocumentList\b[\s\S]*?(?:\/>|>[\s\S]*?<\/DocumentList>)/,
+);
+const documentListTag = documentListTagMatch?.[0] ?? "";
+
+const hasDocumentsProp = /documents=\{documents\}/.test(documentListTag);
+
 // Accept either an inline arrow handler or a named handler that calls console.log("Deleting:", id).
 const inlineHandler =
-  /<DocumentList[\s\S]*documents=\{documents\}[\s\S]*onDelete=\{[\s\S]*console\.log\s*\(\s*["']Deleting:["']\s*,\s*id\s*\)[\s\S]*\}[\s\S]*(?:\/>|>\s*<\/DocumentList>)/.test(
-    appCode,
+  hasDocumentsProp &&
+  /onDelete=\{[\s\S]*console\.log\s*\(\s*["']Deleting:["']\s*,\s*id\s*\)[\s\S]*\}/.test(
+    documentListTag,
   );
 
 const namedHandler =
   /function\s+\w+\s*\(\s*id\s*:\s*string\s*\)\s*\{[\s\S]*console\.log\s*\(\s*["']Deleting:["']\s*,\s*id\s*\)[\s\S]*\}/.test(
     appCode,
   ) &&
-  /<DocumentList[\s\S]*documents=\{documents\}[\s\S]*onDelete=\{\w+\}[\s\S]*(?:\/>|>\s*<\/DocumentList>)/.test(
-    appCode,
-  );
+  hasDocumentsProp &&
+  /onDelete=\{\w+\}/.test(documentListTag);
 
 const rendersDocumentList = inlineHandler || namedHandler;
 

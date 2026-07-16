@@ -41,10 +41,18 @@ const appCode = appExists
   ? fs.readFileSync(appPath, "utf8")
   : "";
 
+// Isolate the Document type literal so its fields can be checked
+// independently of the order the student declares them in.
+const documentTypeMatch = typesCode.match(
+  /export\s+type\s+Document\s*=\s*\{[\s\S]*?\}/,
+);
+const documentTypeBlock = documentTypeMatch?.[0] ?? "";
+
 const exportsDocumentType =
-  /export\s+type\s+Document\s*=\s*{[\s\S]*id\s*:\s*string[\s\S]*title\s*:\s*string[\s\S]*preview\s*:\s*string[\s\S]*image\s*:\s*string[\s\S]*}/.test(
-    typesCode,
-  );
+  /id\s*:\s*string/.test(documentTypeBlock) &&
+  /title\s*:\s*string/.test(documentTypeBlock) &&
+  /preview\s*:\s*string/.test(documentTypeBlock) &&
+  /image\s*:\s*string/.test(documentTypeBlock);
 
 results.push(
   check(
@@ -135,9 +143,21 @@ results.push(
   ),
 );
 
+// Isolate the sampleDocument object literal so its fields can be checked
+// independently of the order the student writes them in.
+const sampleDocumentMatch = appCode.match(
+  /const\s+sampleDocument\s*:\s*Document\s*=\s*\{[\s\S]*?\}/,
+);
+const sampleDocumentBlock = sampleDocumentMatch?.[0] ?? "";
+
 const hasSampleDocument =
-  /const\s+sampleDocument\s*:\s*Document\s*=\s*{[\s\S]*id\s*:\s*["']1["'][\s\S]*title\s*:\s*["']Security Policy["'][\s\S]*preview\s*:\s*["']Updated access control guidelines\.["'][\s\S]*image\s*:\s*["']\/images\/security-policy\.svg["'][\s\S]*}/.test(
-    appCode,
+  /id\s*:\s*["']1["']/.test(sampleDocumentBlock) &&
+  /title\s*:\s*["']Security Policy["']/.test(sampleDocumentBlock) &&
+  /preview\s*:\s*["']Updated access control guidelines\.["']/.test(
+    sampleDocumentBlock,
+  ) &&
+  /image\s*:\s*["']\/images\/security-policy\.svg["']/.test(
+    sampleDocumentBlock,
   );
 
 results.push(
