@@ -80,10 +80,14 @@ const importsDocumentCard =
     appCode,
   );
 
-const rendersDocumentCardInSection =
-  /<section>\s*(?:{\/\*[\s\S]*?\*\/}\s*)?<DocumentCard\s*\/>\s*<\/section>/.test(
-    appCode,
-  );
+const renderOptions = [
+  /<section>\s*(?:{\/\*[\s\S]*?\*\/}\s*)?<DocumentCard\s*\/>\s*<\/section>/,
+  /<section>\s*(?:{\/\*[\s\S]*?\*\/}\s*)?<DocumentCard>\s*<\/DocumentCard>\s*<\/section>/,
+];
+
+const rendersDocumentCardInSection = renderOptions.some((opt) =>
+  opt.test(appCode),
+);
 
 results.push(
   check(
